@@ -1,28 +1,27 @@
 import React from 'react';
 import { Layout } from '../../components/base/Layout';
 import { RestaurantList } from '../../components/restaurant/RestaurantList';
-import { usePodData } from '../../hooks/usePodData';
-import { BasePage } from '../../types/pods';
-
-interface RestaurantListingPageData extends BasePage {
-  display_type: 'grid' | 'list' | 'masonry';
-  items_per_page: number;
-  enable_filters: boolean;
-}
+import { useInitialData } from '../../hooks/useInitialData';
+import { Hero } from '../../components/base/Hero';
 
 export const RestaurantListingPage: React.FC = () => {
-  const { data: pageData, loading, error } = usePodData<RestaurantListingPageData>('restaurant_listing_page');
+  const data = useInitialData();
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-  if (!pageData) return <div>Page not found</div>;
+  if (!data) return null;
 
   return (
-    <Layout pageData={pageData}>
+    <Layout pageData={data}>
+      {data.enable_hero && (
+        <Hero 
+          type={data.hero_type}
+          content={data.hero_content}
+          images={data.hero_images}
+        />
+      )}
       <RestaurantList
-        display_type={pageData.display_type}
-        items_per_page={pageData.items_per_page}
-        enable_filters={pageData.enable_filters}
+        display_type={data.display_type}
+        items_per_page={data.items_per_page}
+        enable_filters={data.enable_filters}
       />
     </Layout>
   );

@@ -15,10 +15,17 @@ interface BasePage {
     cuisine_types: string[];
     address: string;
     coordinates?: string;
-    operating_hours: OperatingHour[];
+    operating_hours: string;
+    price_range: 'budget' | 'moderate' | 'expensive' | 'luxury';
+    rating: number;
+    display_type: 'grid' | 'list' | 'masonry';
+    items_per_page: number;
+    enable_filters: boolean;
+    menus: MenuItem[];
   }
   
   interface MenuItem {
+    id: number;
     item_name: string;
     item_description?: string;
     item_price: number;
@@ -27,6 +34,7 @@ interface BasePage {
     allergens?: string[];
     nutritional_info?: string;
     preparation_time?: number;
+    category: string;
   }
   
   export type { BasePage, Restaurant, MenuItem };
