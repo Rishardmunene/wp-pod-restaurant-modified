@@ -1,0 +1,25 @@
+/* Base styles */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Restaurant list styles */
+.restaurant-list {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+}
+
+.restaurant-container {
+  @apply mt-6;
+}
+
+.restaurant-container.grid {
+  @apply grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3;
+}
+
+.restaurant-container.list {
+  @apply space-y-6;
+}
+
+
+
+

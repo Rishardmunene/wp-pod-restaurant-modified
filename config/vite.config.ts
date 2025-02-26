@@ -1,41 +1,27 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import * as path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src')
-    }
-  },
-  root: path.resolve(__dirname, '../src'),
   server: {
-    port: 3000,
-    cors: true,
+    port: 5173,
+    host: true,
+    hmr: {
+      protocol: 'ws',
+      host: 'localhost',
+      port: 5173
+    },
     proxy: {
       '/wp-json': {
         target: 'http://localhost:8000',
-        changeOrigin: true,
-        secure: false
+        changeOrigin: true
       }
     }
   },
-  build: {
-    outDir: 'wordpress/bundled',
-    manifest: true,
-    rollupOptions: {
-      input: path.resolve(__dirname, '../src/main.tsx'),
-      output: {
-        entryFileNames: 'js/[name]-[hash].js',
-        chunkFileNames: 'js/[name]-[hash].js',
-        assetFileNames: ({name}) => {
-          if (/\.(css)$/.test(name ?? '')) {
-            return 'css/[name]-[hash][extname]'
-          }
-          return 'assets/[name]-[hash][extname]'
-        }
-      }
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '../src')
     }
   }
-}) 
+});

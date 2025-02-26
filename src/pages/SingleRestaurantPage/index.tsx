@@ -1,32 +1,46 @@
 import React from 'react';
+import { usePodData } from '../../hooks/usePodData';
+import { Restaurant, BasePage } from '../../types/pods';
 import { Layout } from '../../components/base/Layout';
-import { useInitialData } from '../../hooks/useInitialData';
 import { ImageGallery } from '../../components/common/ImageGallery';
 import { LocationMap } from '../../components/common/LocationMap';
 import { MenuList } from '../../components/menu/MenuList';
 
-export const SingleRestaurantPage: React.FC = () => {
-  const data = useInitialData();
+interface SingleRestaurantPageProps {
+  id: number;
+}
 
-  if (!data) return null;
+export const SingleRestaurantPage: React.FC<SingleRestaurantPageProps> = ({ id }) => {
+  const { data: restaurant, loading, error } = usePodData<Restaurant>(`restaurant/${id}`);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+  if (!restaurant) return <div>Restaurant not found</div>;
+
+  // Create base page data
+  const basePageData: BasePage = {
+    navigation_type: 'top_nav',
+    page_layout: 'contained',
+    enable_hero: false
+  };
 
   return (
-    <Layout pageData={data}>
+    <Layout pageData={basePageData}>
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-4xl font-bold mb-6">{data.restaurant_name}</h1>
+        <h1 className="text-4xl font-bold mb-6">{restaurant.restaurant_name}</h1>
         
         <ImageGallery 
-          images={data.restaurant_images || []} 
-          alt={data.restaurant_name}
+          images={restaurant.restaurant_images || []} 
+          alt={restaurant.restaurant_name}
         />
         
         <div className="mt-8 grid md:grid-cols-2 gap-8">
           <LocationMap 
-            coordinates={data.coordinates || ''} 
-            address={data.address}
+            coordinates={restaurant.coordinates || ''} 
+            address={restaurant.address}
           />
           <MenuList 
-            items={data.menus} 
+            items={restaurant.menus || []} 
             categories={['Appetizers', 'Main Course', 'Desserts']}
           />
         </div>

@@ -1,28 +1,24 @@
 import React from 'react';
-import { Layout } from '../../components/base/Layout';
-import { RestaurantList } from '../../components/restaurant/RestaurantList';
-import { useInitialData } from '../../hooks/useInitialData';
-import { Hero } from '../../components/base/Hero';
+import RestaurantList from '../../components/restaurant/RestaurantList';
 
-export const RestaurantListingPage: React.FC = () => {
-  const data = useInitialData();
+interface RestaurantListingPageProps {
+  display_type: 'grid' | 'list' | 'masonry';
+  items_per_page: number;
+  enable_filters: boolean;
+}
 
-  if (!data) return null;
-
+export const RestaurantListingPage: React.FC<RestaurantListingPageProps> = ({
+  display_type,
+  items_per_page,
+  enable_filters
+}) => {
   return (
-    <Layout pageData={data}>
-      {data.enable_hero && (
-        <Hero 
-          type={data.hero_type}
-          content={data.hero_content}
-          images={data.hero_images}
-        />
-      )}
-      <RestaurantList
-        display_type={data.display_type}
-        items_per_page={data.items_per_page}
-        enable_filters={data.enable_filters}
+    <div className="min-h-screen bg-gray-50">
+      <RestaurantList 
+        displayType={display_type}
+        itemsPerPage={items_per_page}
+        enableFilters={enable_filters}
       />
-    </Layout>
+    </div>
   );
 };

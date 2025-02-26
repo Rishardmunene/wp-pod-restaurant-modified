@@ -1,9 +1,9 @@
 <?php
 // ** Database settings - You can get this info from your web host ** //
-define( 'DB_NAME', getenv('WORDPRESS_DB_NAME') ?: 'wordpress' );
-define( 'DB_USER', getenv('WORDPRESS_DB_USER') ?: 'wordpress' );
-define( 'DB_PASSWORD', getenv('WORDPRESS_DB_PASSWORD') ?: 'wordpress' );
-define( 'DB_HOST', getenv('WORDPRESS_DB_HOST') ?: 'db' );
+define( 'DB_NAME', 'wordpress' );
+define( 'DB_USER', 'wordpress' );
+define( 'DB_PASSWORD', 'wordpress' );
+define( 'DB_HOST', 'db' );
 define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
@@ -20,19 +20,20 @@ define('NONCE_SALT',       getenv('WORDPRESS_NONCE_SALT') ?: 'put your unique ph
 // WordPress Database Table prefix
 $table_prefix = 'wp_';
 
-// For developers: WordPress debugging mode
-define( 'WP_DEBUG', getenv('WORDPRESS_DEBUG') ?: false );
-define( 'WP_DEBUG_LOG', getenv('WORDPRESS_DEBUG_LOG') ?: false );
-define( 'WP_DEBUG_DISPLAY', getenv('WORDPRESS_DEBUG_DISPLAY') ?: false );
+// Enable debug logging
+define('WP_DEBUG', getenv('WORDPRESS_DEBUG') ?: true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', true);
+@ini_set('display_errors', 1);
 
 // Enable REST API
-define( 'REST_API_ENABLED', true );
+define('REST_API_ENABLED', true);
 
 // Allow file modifications including updates and plugin/theme installation
 define('DISALLOW_FILE_MODS', false);
 
 // Absolute path to the WordPress directory
-if ( !defined('ABSPATH') )
+if (!defined('ABSPATH'))
     define('ABSPATH', dirname(__FILE__) . '/');
 
 // Sets up WordPress vars and included files

@@ -1,44 +1,55 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { RestaurantFilters } from './RestaurantFilters';
 import { RestaurantCard } from './RestaurantCard';
-import { usePodData } from '../../hooks/usePodData';
 import { Restaurant } from '../../types/pods';
 
 interface RestaurantListProps {
-  display_type: 'grid' | 'list' | 'masonry';
-  items_per_page: number;
-  enable_filters: boolean;
+  displayType: 'grid' | 'list' | 'masonry';
+  itemsPerPage: number;
+  enableFilters: boolean;
 }
 
-export const RestaurantList: React.FC<RestaurantListProps> = ({
-  display_type,
-  items_per_page,
-  enable_filters
+const RestaurantList: React.FC<RestaurantListProps> = ({
+  displayType,
+  itemsPerPage,
+  enableFilters
 }) => {
-  const { data: restaurants, loading, error } = usePodData<Restaurant[]>('restaurant');
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const response = await fetch('/wp-json/wp-react-pods/v1/restaurants');
+        if (!response.ok) throw new Error('Failed to fetch restaurants');
+        const data = await response.json();
+        setRestaurants(data.restaurants);
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to fetch restaurants'));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurants();
+  }, []);
 
   if (loading) return <div>Loading restaurants...</div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!restaurants?.length) return <div>No restaurants found</div>;
 
-  const gridClass = {
-    grid: 'grid md:grid-cols-2 lg:grid-cols-3 gap-6',
-    list: 'space-y-6',
-    masonry: 'columns-1 md:columns-2 lg:columns-3 gap-6'
-  }[display_type];
-
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      {enable_filters && (
-        <div className="mb-8">
-          {/* Filter components will go here */}
-        </div>
-      )}
-      
-      <div className={gridClass}>
-        {restaurants.slice(0, items_per_page).map(restaurant => (
+    <div className="restaurant-list">
+      <h1>Our Restaurants</h1>
+      {enableFilters && <RestaurantFilters />}
+      <div className={`restaurant-container ${displayType}`}>
+        {restaurants.slice(0, itemsPerPage).map(restaurant => (
           <RestaurantCard key={restaurant.id} restaurant={restaurant} />
         ))}
       </div>
     </div>
   );
 };
+
+export default RestaurantList;

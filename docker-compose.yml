@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3"
 
 services:
   wordpress:
@@ -7,28 +7,33 @@ services:
       dockerfile: docker/wordpress/Dockerfile
     ports:
       - "8000:80"
+    volumes:
+      - ./wordpress:/var/www/html/wp-content/themes/wp-react-pods
+      - ./logs:/var/www/html/wp-content/debug.log
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DEBUG: 1
-    volumes:
-      - ./wordpress:/var/www/html/wp-content/themes/wp-react-pods
-      - ./uploads:/var/www/html/wp-content/uploads
+      WP_DEBUG: 1
     depends_on:
       - db
 
   db:
     image: mysql:5.7
-    volumes:
-      - db_data:/var/lib/mysql
-      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+      MYSQL_ROOT_PASSWORD: somewordpress
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
 
 volumes:
   db_data: {}

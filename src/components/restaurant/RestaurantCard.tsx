@@ -26,7 +26,7 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) =>
         <h3 className="text-xl font-semibold">{restaurant.restaurant_name}</h3>
         
         <div className="mt-2 flex flex-wrap gap-2">
-          {restaurant.cuisine_types.map((cuisine, index) => (
+          {Array.isArray(restaurant.cuisine_types) && restaurant.cuisine_types.map((cuisine, index) => (
             <span
               key={index}
               className="px-2 py-1 text-sm bg-gray-100 rounded-full"
@@ -37,6 +37,12 @@ export const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant }) =>
         </div>
         
         <p className="mt-2 text-gray-600">{restaurant.address}</p>
+        
+        {restaurant.operating_hours && (
+          <div className="mt-2 text-sm text-gray-500">
+            {restaurant.operating_hours.find(h => !h.closed)?.open_time && 'Open Today'}
+          </div>
+        )}
       </div>
     </Link>
   );
